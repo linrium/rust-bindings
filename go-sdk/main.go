@@ -9,7 +9,6 @@ package main
 #include <stdlib.h>
 */
 import "C"
-import "unsafe"
 
 type Ip struct {
 	Origin string `json:"origin"`
@@ -17,10 +16,7 @@ type Ip struct {
 
 func main() {
 	rawStr := C.hello()
-	defer func() {
-		C.free(unsafe.Pointer(rawStr.origin))
-		C.free(unsafe.Pointer(rawStr))
-	}()
+	defer C.free_struct(rawStr)
 
 	result := Ip{
 		Origin: C.GoString(rawStr.origin),

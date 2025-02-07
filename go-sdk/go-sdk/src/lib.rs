@@ -1,5 +1,6 @@
+use libc::c_char;
 use serde::{Deserialize, Serialize};
-use std::ffi::{CStr, CString};
+use std::ffi::CString;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Ip {
@@ -8,7 +9,7 @@ struct Ip {
 
 #[repr(C)]
 struct CIp {
-    origin: *const std::os::raw::c_char
+    origin: *const c_char,
 }
 
 async fn fetch_data() -> Result<Ip, reqwest::Error> {
@@ -31,4 +32,16 @@ pub extern "C" fn hello() -> *mut CIp {
     };
 
     Box::into_raw(Box::new(c_ip))
+}
+
+#[no_mangle]
+pub extern "C" fn free_struct(ptr: *mut CIp) {
+    if ptr.is_null() {
+        return;
+    }
+
+    unsafe {
+        let _ = CString::from_raw((*ptr).origin as *mut c_char);
+        drop(Box::from_raw(ptr));
+    }
 }
