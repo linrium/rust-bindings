@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyo3::{exceptions::PyValueError, prelude::*};
 use serde::{Deserialize, Serialize};
 
 #[pyclass]
@@ -13,10 +13,10 @@ fn rust_sleep(py: Python) -> PyResult<Bound<PyAny>> {
     pyo3_async_runtimes::tokio::future_into_py(py, async move {
         let ip = reqwest::get("https://httpbin.org/ip")
             .await
-            .unwrap()
+            .map_err(|e| PyValueError::new_err(e.to_string()))?
             .json::<Ip>()
             .await
-            .unwrap();
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
         Ok(ip)
     })

@@ -36,8 +36,6 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsPromise> {
             let origin = cx.string(ip.origin);
             obj.set(&mut cx, "origin", origin)?;
 
-
-
             Ok(obj)
         })
     });
