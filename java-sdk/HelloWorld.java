@@ -14,8 +14,12 @@ class HelloWorld {
   }
 
   public static void main(String[] args) {
-    System.out.println("Invoking asyncComputation (thread id = " + Thread.currentThread().getId() + ")");
-    asyncComputation(new HelloWorld());
+    System.out.println("Running");
+
+    Thread thread = new Thread(() -> asyncComputation(new HelloWorld()));
+    thread.start();
+
+    System.out.println("Done");
   }
 
   public void asyncCallback(Ip ip) {
