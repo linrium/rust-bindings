@@ -17,7 +17,10 @@ type Ip struct {
 
 func main() {
 	rawStr := C.hello()
-	defer C.free(unsafe.Pointer(rawStr))
+	defer func() {
+		C.free(unsafe.Pointer(rawStr.origin))
+		C.free(unsafe.Pointer(rawStr))
+	}()
 
 	result := Ip{
 		Origin: C.GoString(rawStr.origin),
