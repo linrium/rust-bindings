@@ -1,5 +1,5 @@
 java_run: lib
-	cd src/ && javac HelloWorld.java && java -Djava.library.path=../java-sdk/target/debug/ HelloWorld
+	javac HelloWorld.java && java -Djava.library.path=java-sdk/target/debug/ HelloWorld
 
 .PHONY: lib
 
