@@ -15,12 +15,18 @@ type Ip struct {
 }
 
 func main() {
-	rawStr := C.hello()
-	defer C.free_struct(rawStr)
+	resultChan := make(chan Ip)
+	go func() {
+		rawStr := C.hello()
+		defer C.free_struct(rawStr)
 
-	result := Ip{
-		Origin: C.GoString(rawStr.origin),
-	}
+		result := Ip{
+			Origin: C.GoString(rawStr.origin),
+		}
+		resultChan <- result
+	}()
+
+	result := <-resultChan
 
 	println(result.Origin)
 }
